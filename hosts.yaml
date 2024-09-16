@@ -1,0 +1,56 @@
+all:
+  ansible_user: "{{ credentials[inventory_hostname].user }}" 
+  ansible_password: "{{ credentials[inventory_hostname].passowrd }}"
+  ansible_become_password: "{{ credentials[inventory_hostname].become_password }}"
+
+
+devpi:
+  hosts:
+    localhost
+  vars:
+
+hyperv:
+  hosts:
+    192.168.1.106
+  vars:
+    ansible_connection: winrm
+    ansible_winrm_server_cert_validation: ignore
+    ansible_winrm_transport: basic
+    become_method: runas
+
+cisco:
+  hosts:
+    192.168.0.3
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_network_os: cisco.ios.ios
+    ansible_become: true
+
+fortinet:
+  hosts:
+    192.168.0.1
+  vars:
+    ansible_connection: ansible.netcomon.network_cli
+    ansible_network_os: fortinet.fortios
+
+networkdevices:
+  children:
+    cisco:
+    fortinet:
+
+servers:
+  children:
+    devpi:
+    hyperv:
+
+linux:
+  children:
+    devpi:
+
+windows:
+  children:
+    hyperv:
+
+raspberrypi:
+  children:
+    devpi:

@@ -1,0 +1,40 @@
+---
+
+- name: "Config DevPi"
+  hosts: devpi 
+  become: true
+
+  tasks:
+  - name: "Add hashicorp repo"
+    ansible.builtin.deb822_repository:
+      name: hashicorp
+      types: [deb]
+      uris: "https://apt.releases.hashicorp.com:"
+      components: main
+      suites: noble
+      signed_by: https://apt.releases.hashicorp.com/gpg
+      state: present
+      enabled: true
+
+
+  - name: "Ensure Install Neovim installed"
+    ansible.builtin.apt:
+      name: neovim
+      state: latest
+
+  - name: "Install Custom neovim config"
+    ansible.builtin.git:
+      repo: "https://github.com/powershellbreakfast/kickstart.nvim.git"
+      dest: "$HOME/.config/nvim"
+
+  - name: "Install Bashtop"
+    ansible.builtin.apt:
+      name: bashtop 
+      state: latest
+
+  - name: "Install tmux"
+    ansible.builtin.apt:
+      name: tmux
+      state: latest
+
+
