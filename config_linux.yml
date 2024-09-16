@@ -37,4 +37,8 @@
       name: tmux
       state: latest
 
+  - name: "Install nmap"
+    ansible.builtin.apt:
+      name: nmap
+      state: latest
 
