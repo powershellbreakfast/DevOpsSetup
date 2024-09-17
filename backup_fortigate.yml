@@ -1,0 +1,17 @@
+---
+- name: Backup FortiGate
+  hosts: fortigate
+
+  tasks:
+    - name: Backup Fortigate.
+      fortios_monitor:
+        selector: 'backup.system.config'
+        vdom: 'root'
+        params:
+          scope: 'global'
+      register: backupinfo
+   
+    - name: Save the backup information.
+      copy:
+        content: '{{ backupinfo.meta.raw }}'
+        dest: "/var/fortigate_backups/{{hostname}}-{{ lookup('pipe', 'date +%d%m%Y-%H') }}.txt"
